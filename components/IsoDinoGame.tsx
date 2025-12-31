@@ -44,7 +44,12 @@ const IsoDinoGame: React.FC = () => {
   const speedRef = useRef<number>(INITIAL_SPEED);
   const distanceRef = useRef<number>(0);
 
+
+
   const timeRef = useRef<number>(0); // Global time for animations
+
+  // Touch Handling Refs
+  const touchStartRef = useRef<{ x: number, y: number } | null>(null);
 
   // Entities
   const dinoRef = useRef<Entity>({
@@ -125,6 +130,38 @@ const IsoDinoGame: React.FC = () => {
       window.removeEventListener('keyup', handleKeyUp);
     };
   }, [handleJump, handleDuck]);
+
+  // Touch Handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartRef.current) return;
+
+    const touch = e.changedTouches[0];
+    const diffX = touch.clientX - touchStartRef.current.x;
+    const diffY = touch.clientY - touchStartRef.current.y;
+
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+      // Horizontal (maybe side dashes later?)
+    } else {
+      // Vertical
+      if (diffY > 50) {
+        // Swipe Down
+        handleDuck(true);
+        setTimeout(() => handleDuck(false), 800); // Auto-unduck after a bit for mobile convenience
+      } else if (diffY < -50) {
+        // Swipe Up
+        handleJump();
+      } else {
+        // Tap
+        handleJump();
+      }
+    }
+    touchStartRef.current = null;
+  };
 
   const initClouds = () => {
     const clouds: Entity[] = [];
@@ -1131,15 +1168,21 @@ const IsoDinoGame: React.FC = () => {
 
       if (containerRef.current && canvasRef.current) {
         const { clientWidth, clientHeight } = containerRef.current;
-        if (canvasRef.current.width !== clientWidth || canvasRef.current.height !== clientHeight) {
-          canvasRef.current.width = clientWidth;
-          canvasRef.current.height = clientHeight;
+        const dpr = window.devicePixelRatio || 1;
+
+        if (canvasRef.current.width !== clientWidth * dpr || canvasRef.current.height !== clientHeight * dpr) {
+          canvasRef.current.width = clientWidth * dpr;
+          canvasRef.current.height = clientHeight * dpr;
+          // Scale needs to be reset after resize? No, context is reset.
         }
 
         update(dt);
         const ctx = canvasRef.current.getContext('2d');
         if (ctx) {
+          ctx.save();
+          ctx.scale(dpr, dpr);
           draw(ctx, clientWidth, clientHeight);
+          ctx.restore();
         }
       }
 
@@ -1151,8 +1194,13 @@ const IsoDinoGame: React.FC = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="font-sans relative w-full h-screen bg-gray-100 overflow-hidden select-none" onTouchStart={handleJump}>
-      <canvas ref={canvasRef} className="w-full h-full block" />
+    <div
+      ref={containerRef}
+      className="font-sans relative w-full h-full bg-gray-100 overflow-hidden select-none touch-none"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      <canvas ref={canvasRef} className="w-full h-full block" style={{ width: '100%', height: '100%' }} />
 
       <div className="absolute top-2 left-1/2 -translate-x-1/2 flex flex-col items-center font-sans pointer-events-none z-20">
         {/* Score Display (Always Visible) */}
@@ -1198,7 +1246,7 @@ const IsoDinoGame: React.FC = () => {
         (uiState === GameState.START || uiState === GameState.GAME_OVER) && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/5 backdrop-blur-[2px]">
 
-            <div className="relative w-full max-w-xl p-6 h-[600px] mx-5 bg-white/45 backdrop-blur-md rounded-2xl shadow-2xl border border-white/60 flex flex-col gap-2">
+            <div className="relative w-full max-w-xl p-4 md:p-6 h-auto md:h-[600px] max-h-[85vh] mx-4 md:mx-auto bg-white/45 backdrop-blur-md rounded-2xl shadow-2xl border border-white/60 flex flex-col gap-2 overflow-y-auto custom-scrollbar">
 
               {/* Header Grid */}
               <div className="grid grid-cols-1 items-start w-full relative z-10 shrink-0">

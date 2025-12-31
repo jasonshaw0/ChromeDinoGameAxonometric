@@ -1255,27 +1255,24 @@ const IsoDinoGame: React.FC = () => {
 
                   {/* Technical Info Dropdown */}
                   <div className="w-full max-w-[320px] flex flex-col min-h-0">
-                    <button
-                      onClick={() => setIsInfoOpen(!isInfoOpen)}
-                      className="w-full flex items-center justify-between px-4 py-2 text-xs font-semibold text-gray-600 underline transition-colors group  hover:border-gray-200 shrink-0"
-                    >
-                      <span>How does this work?<span className={`material-symbols-outlined text-[16px] text-gray-400 group-hover:text-gray-600 transition-transform duration-300 ${isInfoOpen ? 'rotate-180' : ''}`}>expand_more</span></span>
 
-                    </button>
+                    <span>How does this work?</span>
 
-                    {isInfoOpen && (
-                      <div className="mt-2 text-left bg-gray-50/80 rounded-lg p-4 text-[11px] leading-relaxed text-gray-600 space-y-3 animate-in fade-in slide-in-from-top-1 border border-gray-100 overflow-y-auto custom-scrollbar">
-                        <p>
-                          <strong className="text-gray-900">True 2.5D Projection:</strong> This isn't a 3D engine. It uses a rigorous <span className="font-mono text-orange-600 bg-orange-50 px-1 rounded">axonometric projection</span> algorithm to mathematically map 3D coordinates (x, y, z) onto a 2D HTML5 Canvas plane.
-                        </p>
-                        <p>
-                          <strong className="text-gray-900">Voxel-based Rendering:</strong> Every entity—from the dinosaur to the dust particles—is constructed from individual isometric cubes ("voxels") that are sorted by depth (Z-indexing) every single frame to ensure correct occlusion.
-                        </p>
-                        <p>
-                          <strong className="text-gray-900">Dynamic Environment:</strong> The infinite terrain features procedural generation for ground details, per-block dynamic shadow casting based on height, and a parallax scrolling sky system.
-                        </p>
-                      </div>
-                    )}
+
+
+
+                    <div className="mt-2 text-left p-2 text-[11px] leading-relaxed text-gray-600 space-y-3  overflow-y-auto custom-scrollbar">
+                      <p>
+                        <strong className="text-gray-900">True 2.5D Projection:</strong> This isn't a 3D engine. It uses a rigorous <span className="font-mono text-orange-600 bg-orange-50 px-1 rounded">axonometric projection</span> algorithm to mathematically map 3D coordinates (x, y, z) onto a 2D HTML5 Canvas plane.
+                      </p>
+                      <p>
+                        <strong className="text-gray-900">Voxel-based Rendering:</strong> Every entity—from the dinosaur to the dust particles—is constructed from individual isometric cubes ("voxels") that are sorted by depth (Z-indexing) every single frame to ensure correct occlusion.
+                      </p>
+                      <p>
+                        <strong className="text-gray-900">Dynamic Environment:</strong> The infinite terrain features procedural generation for ground details, per-block dynamic shadow casting based on height, and a parallax scrolling sky system.
+                      </p>
+                    </div>
+
                   </div>
                 </div>
               </div>

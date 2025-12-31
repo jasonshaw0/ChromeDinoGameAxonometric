@@ -1,0 +1,5 @@
+{
+  "name": "IsoDino Run",
+  "description": "An isometric 2.5D endless runner featuring a voxel dinosaur. Jump and duck to avoid obstacles in a stylized 3D world.",
+  "requestFramePermissions": []
+}
